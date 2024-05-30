@@ -15,4 +15,9 @@ public class UserController {
     public String loginForm(){
         return "user/login-form";
     }
+
+    @GetMapping("/logout")
+    public String logout(){
+        return "redirect:/account/list"; // 페이지를 찾는게 아니라, api 주소 찾기
+    }
 }
