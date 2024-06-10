@@ -14,7 +14,8 @@ import java.io.IOException;
 public class UserController {
 
     private final HttpSession session;
-    private final UserRepository userRepository;
+    // STEP: 세번째 단계 (의존성 변경)
+    private final UserService userService;
 
     @GetMapping("/logout")
     public String logout(){
@@ -24,7 +25,7 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(String username, String password){
-        User sessionUser = userRepository.findByUsernameAndPassword(username, password);
+        User sessionUser = userService.로그인(username, password);
         if(sessionUser == null){
             throw new RuntimeException("아이디 혹은 패스워드가 틀렸습니다");
         }else{
@@ -51,7 +52,8 @@ public class UserController {
         System.out.println("email : "+email);
         System.out.println("fullname : "+fullname);
 
-        userRepository.save(username, password, email, fullname);
+        // STEP: 네번째 단계
+        userService.회원가입(username, password, email, fullname);
 
         return "redirect:/login-form";
     }
