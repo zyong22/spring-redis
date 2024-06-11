@@ -1,11 +1,14 @@
 package shop.mtcoding.bank.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 
@@ -24,8 +27,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(String username, String password){
-        User sessionUser = userService.로그인(username, password);
+    public String login(UserRequest.LoginDTO reqDTO){
+        User sessionUser = userService.로그인(reqDTO);
         if(sessionUser == null){
             throw new RuntimeException("아이디 혹은 패스워드가 틀렸습니다");
         }else{
@@ -46,14 +49,10 @@ public class UserController {
     // http1.0 - Post(insert, delete, update), Get(select)
     // Post(insert), Get(select)
     @PostMapping("/join") // 회원가입
-    public String join(String username, String password, String email, String fullname){
-        System.out.println("username : "+username);
-        System.out.println("password : "+password);
-        System.out.println("email : "+email);
-        System.out.println("fullname : "+fullname);
+    public String join(UserRequest.JoinDTO reqDTO){
 
         // STEP: 네번째 단계
-        userService.회원가입(username, password, email, fullname);
+        userService.회원가입(reqDTO);
 
         return "redirect:/login-form";
     }

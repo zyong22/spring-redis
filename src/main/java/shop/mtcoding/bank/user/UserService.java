@@ -11,16 +11,18 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void 회원가입(String username, String password, String email, String fullname){
+    public void 회원가입(UserRequest.JoinDTO reqDTO){
 
         // STEP: 두번째 단계
-        User user = userRepository.findByUsername(username);
-        if(user != null) throw new RuntimeException("유저네임 중복되었습니다 : "+username);
+        User user = userRepository.findByUsername(reqDTO.getUsername());
+        if(user != null) throw new RuntimeException("유저네임 중복되었습니다 : "+reqDTO.getUsername());
 
-        userRepository.save(username, password, email, fullname);
+        userRepository.
+                save(reqDTO.getUsername(), reqDTO.getPassword(), reqDTO.getEmail(), reqDTO.getFullname());
     }
 
-    public User 로그인(String username, String password){
-        return userRepository.findByUsernameAndPassword(username, password);
+    public User 로그인(UserRequest.LoginDTO reqDTO){
+
+        return userRepository.findByUsernameAndPassword(reqDTO.getUsername(), reqDTO.getPassword());
     }
 }
