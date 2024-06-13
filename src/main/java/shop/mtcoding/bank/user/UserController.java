@@ -1,24 +1,22 @@
 package shop.mtcoding.bank.user;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.io.IOException;
 
 @RequiredArgsConstructor
 @Controller
 public class UserController {
 
     private final HttpSession session;
-    // STEP: 세번째 단계 (의존성 변경)
     private final UserService userService;
+
+    @GetMapping("/home")
+    public String home(){
+        return "home";
+    }
 
     @GetMapping("/logout")
     public String logout(){
@@ -33,27 +31,14 @@ public class UserController {
             throw new RuntimeException("아이디 혹은 패스워드가 틀렸습니다");
         }else{
             session.setAttribute("sessionUser", sessionUser);
-            return "redirect:/account/list";
+            return "redirect:/home";
         }
     }
 
-    @GetMapping("/test1")
-    public void test1(HttpServletResponse response) throws IOException {
-        //response.sendRedirect("/login-form");
-        response.setHeader("Location", "http://localhost:8080/login-form");
-        response.setStatus(302);
-    }
 
-    // http3.0
-    // http1.1 - 사용중 Post, Get, Put, Delete
-    // http1.0 - Post(insert, delete, update), Get(select)
-    // Post(insert), Get(select)
     @PostMapping("/join") // 회원가입
     public String join(UserRequest.JoinDTO reqDTO){
-
-        // STEP: 네번째 단계
         userService.회원가입(reqDTO);
-
         return "redirect:/login-form";
     }
 

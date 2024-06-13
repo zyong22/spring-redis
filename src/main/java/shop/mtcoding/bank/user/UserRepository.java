@@ -5,18 +5,11 @@ import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-@RequiredArgsConstructor // final 변수를 초기화하는 생성자를 만들어준다.
-@Repository // ioc 등록
+@RequiredArgsConstructor
+@Repository
 public class UserRepository {
-    
-    //@Autowired // 의존성 주입
+
     private final EntityManager em;
-
-
-    // 의존성 주입
-//    public UserRepository(EntityManager em) {
-//        this.em = em;
-//    }
 
     public void save(String username, String password, String email, String fullname){
         Query query =
@@ -27,16 +20,6 @@ public class UserRepository {
         query.setParameter(4, fullname);
 
         query.executeUpdate(); // write (insert, delete, update)
-    }
-
-    public void saveV2(String username, String password, String email, String fullname){
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setFullname(fullname);
-
-        em.persist(user);
     }
 
     public User findByUsernameAndPassword(String username, String password){
@@ -62,37 +45,6 @@ public class UserRepository {
         }
     }
 
-    public User findByUsernameAndPasswordV2(String username, String password){
-        Query query =
-                em.createNativeQuery("select * from user_tb where username=? and password=?", User.class);
-        query.setParameter(1, username);
-        query.setParameter(2, password);
-
-        try {
-            // NOTE: user 클래스에 디폴트 생성자가 있어야 하이버네이트가 new를 해서 파싱해준다.
-            User user = (User) query.getSingleResult();
-            return user;
-        }catch (Exception e){
-            return null;
-        }
-    }
-
-    public User findByUsernameAndPasswordV3(String username, String password){
-        // JPQL
-        Query query =
-                em.createQuery("select u from User u where u.username=:username and u.password=:password", User.class);
-        query.setParameter("username", username);
-        query.setParameter("password", password);
-
-        try {
-            User user = (User) query.getSingleResult();
-            return user;
-        }catch (Exception e){
-            return null;
-        }
-    }
-
-    // STEP: 유저네임 중복체크 첫번째 단계
     public User findByUsername(String username){
         // JPQL
         Query query =
