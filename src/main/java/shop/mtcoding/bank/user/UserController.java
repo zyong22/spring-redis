@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import shop.mtcoding.bank.config.RedisConfig;
 
 @RequiredArgsConstructor
 @Controller
@@ -12,10 +15,20 @@ public class UserController {
 
     private final HttpSession session;
     private final UserService userService;
+    private final RedisConfig redisConfig;
 
     @GetMapping("/home")
     public String home(){
+        System.out.println(redisConfig.getRedisHost());
         return "home";
+    }
+
+    // 리스폰스 바디 앞에 붙이면 문자 그대로 반환
+    @GetMapping("/redis/test")
+    public @ResponseBody String redisTest(){
+        User sessionUser = (User)session.getAttribute("sessionUser");
+        System.out.println("username: " + sessionUser.getUsername());
+        return "redis test";
     }
 
     @GetMapping("/logout")
